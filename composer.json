@@ -1,0 +1,23 @@
+{
+    "name": "scandipwa/inventory",
+    "description": "N/A",
+    "type": "magento2-module",
+    "license": [
+        "OSL-3.0"
+    ],
+    "require": {
+        "magento/framework": "*",
+        "scandipwa/performance": "*",
+        "magento/module-inventory-api": "*",
+        "magento/module-inventory-catalog": "*",
+        "magento/module-catalog-inventory": "*"
+    },
+    "autoload": {
+        "files": [
+            "src/registration.php"
+        ],
+        "psr-4": {
+            "ScandiPWA\\Performance\\": "src/"
+        }
+    }
+}
