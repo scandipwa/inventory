@@ -1,4 +1,4 @@
-# ScandiPWA_Performance
+# ScandiPWA_Inventory
 
 An extension for `ScandiPWA_Performance` which implements MSI modules.
 
