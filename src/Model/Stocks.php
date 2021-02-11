@@ -8,7 +8,7 @@
 
 declare(strict_types=1);
 
-namespace ScandiPWA\Inventory\Model\Resolver\Products\DataPostProcessor;
+namespace ScandiPWA\Inventory\Model;
 
 use Magento\CatalogInventory\Model\Configuration;
 use Magento\Framework\Api\SearchCriteriaBuilder;
@@ -22,7 +22,7 @@ use ScandiPWA\Performance\Model\Resolver\ResolveInfoFieldsTrait;
 
 /**
  * Class Images
- * @package ScandiPWA\Inventory\Model\Resolver\Products\DataPostProcessor
+ * @package ScandiPWA\Inventory\Model
  */
 class Stocks implements ProductsDataPostProcessorInterface
 {

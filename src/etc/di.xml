@@ -11,6 +11,6 @@
 -->
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
     <preference
-            for="ScandiPWA\Performance\Model\Resolver\Products\DataPostProcessor\Stocks"
-            type="ScandiPWA\Inventory\Model\Resolver\Products\DataPostProcessor\Stocks"/>
+        for="ScandiPWA\Performance\Model\Resolver\Products\DataPostProcessor\Stocks"
+        type="ScandiPWA\Inventory\Model\Stocks" />
 </config>

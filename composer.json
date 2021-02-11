@@ -5,6 +5,7 @@
     "license": [
         "OSL-3.0"
     ],
+    "version": "0.0.1",
     "require": {
         "magento/framework": "*",
         "scandipwa/performance": "*",
@@ -17,7 +18,7 @@
             "src/registration.php"
         ],
         "psr-4": {
-            "ScandiPWA\\Performance\\": "src/"
+            "ScandiPWA\\Inventory\\": "src/"
         }
     }
 }
