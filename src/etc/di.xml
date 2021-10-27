@@ -13,4 +13,9 @@
     <preference
         for="ScandiPWA\Performance\Model\Resolver\Products\DataPostProcessor\Stocks"
         type="ScandiPWA\Inventory\Model\Stocks" />
+
+    <type name="Magento\Sales\Api\OrderManagementInterface">
+        <plugin name="after_place_order_operation"
+                type="ScandiPWA\Inventory\Plugin\ChangeStockStatusAfterOrderPlacementPlugin"/>
+    </type>
 </config>
