@@ -1,9 +1,13 @@
 <?php
 /**
- * @category    ScandiPWA
- * @package     ScandiPWA_Inventory
- * @author      Alfreds Genkins <info@scandiweb.com>
- * @copyright   Copyright (c) 2019 Scandiweb, Ltd (https://scandiweb.com)
+ * ScandiPWA - Progressive Web App for Magento
+ *
+ * Copyright © Scandiweb, Inc. All rights reserved.
+ * See LICENSE for license details.
+ *
+ * @license OSL-3.0 (Open Software License ("OSL") v. 3.0)
+ * @package scandipwa/base-theme
+ * @link https://github.com/scandipwa/base-theme
  */
 
 use \Magento\Framework\Component\ComponentRegistrar;

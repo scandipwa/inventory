@@ -1,9 +1,13 @@
 <?php
 /**
- * @category    ScandiPWA
- * @package     ScandiPWA_Inventory
- * @author      Alfreds Genkins <info@scandiweb.com>
- * @copyright   Copyright (c) 2019 Scandiweb, Ltd (https://scandiweb.com)
+ * ScandiPWA - Progressive Web App for Magento
+ *
+ * Copyright © Scandiweb, Inc. All rights reserved.
+ * See LICENSE for license details.
+ *
+ * @license OSL-3.0 (Open Software License ("OSL") v. 3.0)
+ * @package scandipwa/base-theme
+ * @link https://github.com/scandipwa/base-theme
  */
 
 declare(strict_types=1);
@@ -13,43 +17,28 @@ namespace ScandiPWA\Inventory\Model;
 use Magento\CatalogInventory\Model\Configuration;
 use Magento\Framework\Api\SearchCriteriaBuilder;
 use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Framework\GraphQl\Schema\Type\ResolveInfo;
 use Magento\InventoryApi\Api\Data\SourceItemInterface;
 use Magento\InventoryApi\Api\SourceItemRepositoryInterface;
+use Magento\InventorySalesApi\Api\GetProductSalableQtyInterface;
 use Magento\Store\Model\ScopeInterface;
-use ScandiPWA\Performance\Api\ProductsDataPostProcessorInterface;
-use ScandiPWA\Performance\Model\Resolver\ResolveInfoFieldsTrait;
+use Magento\InventoryCatalog\Model\GetStockIdForCurrentWebsite;
+use ScandiPWA\Performance\Model\Resolver\Products\DataPostProcessor\Stocks as BaseStocks;
 
 /**
  * Class Images
  * @package ScandiPWA\Inventory\Model
  */
-class Stocks implements ProductsDataPostProcessorInterface
+class Stocks extends BaseStocks
 {
-    use ResolveInfoFieldsTrait;
-
-    const ONLY_X_LEFT_IN_STOCK = 'only_x_left_in_stock';
-
-    const STOCK_STATUS = 'stock_status';
-
-    const IN_STOCK = 'IN_STOCK';
-
-    const OUT_OF_STOCK = 'OUT_OF_STOCK';
+    /**
+     * @var GetProductSalableQtyInterface
+     */
+    protected $getSalableQuantityDataBySku;
 
     /**
-     * @var SourceItemRepositoryInterface
+     * @var GetStockIdForCurrentWebsite
      */
-    protected $stockRepository;
-
-    /**
-     * @var SearchCriteriaBuilder
-     */
-    protected $searchCriteriaBuilder;
-
-    /**
-     * @var ScopeConfigInterface
-     */
-    protected $scopeConfig;
+    protected $getStockIdForCurrentWebsite;
 
     /**
      * Stocks constructor.
@@ -60,38 +49,21 @@ class Stocks implements ProductsDataPostProcessorInterface
     public function __construct(
         SourceItemRepositoryInterface $stockRepository,
         SearchCriteriaBuilder $searchCriteriaBuilder,
-        ScopeConfigInterface $scopeConfig
+        ScopeConfigInterface $scopeConfig,
+        GetProductSalableQtyInterface $getSalableQuantityDataBySku,
+        GetStockIdForCurrentWebsite $getStockIdForCurrentWebsite
     ) {
+        parent::__construct(
+            $stockRepository,
+            $searchCriteriaBuilder,
+            $scopeConfig
+        );
+
         $this->searchCriteriaBuilder = $searchCriteriaBuilder;
         $this->stockRepository = $stockRepository;
         $this->scopeConfig = $scopeConfig;
-    }
-
-    /**
-     * @param $node
-     * @return string[]
-     */
-    protected function getFieldContent($node)
-    {
-        $stocks = [];
-        $validFields = [
-            self::ONLY_X_LEFT_IN_STOCK,
-            self::STOCK_STATUS
-        ];
-
-        foreach ($node->selectionSet->selections as $selection) {
-            if (!isset($selection->name)) {
-                continue;
-            };
-
-            $name = $selection->name->value;
-
-            if (in_array($name, $validFields)) {
-                $stocks[] = $name;
-            }
-        }
-
-        return $stocks;
+        $this->getSalableQuantityDataBySku = $getSalableQuantityDataBySku;
+        $this->getStockIdForCurrentWebsite = $getStockIdForCurrentWebsite;
     }
 
     /**
@@ -142,7 +114,13 @@ class Stocks implements ProductsDataPostProcessorInterface
         $formattedStocks = [];
 
         foreach ($stockItems as $stockItem) {
-            $inStock = $stockItem->getStatus() === SourceItemInterface::STATUS_IN_STOCK;
+            // Added next fields to get stock status depending on salable qty of product
+            try {
+                $stockId = $this->getStockIdForCurrentWebsite->execute();
+                $inStock = $this->getSalableQuantityDataBySku->execute($stockItem->getSku(), $stockId) > 0;
+            } catch (\Exception $e) {
+                $inStock = $stockItem->getStatus() === SourceItemInterface::STATUS_IN_STOCK;
+            }
 
             $leftInStock = null;
             $qty = $stockItem->getQuantity();

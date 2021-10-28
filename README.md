@@ -1,5 +1,6 @@
 # ScandiPWA_Inventory
 
-An extension for `ScandiPWA_Performance` which implements MSI modules.
+An extension for `ScandiPWA_Performance`.
 
-The main purpose of this extension is to allow enabling and disabling MSI.
+Main purpose of this extension is to fix Magento 2 problem with salable quantity attribute.
+When salable quantity goes below 1, product should be set to out of stock.
